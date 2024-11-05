@@ -20,3 +20,8 @@ To get started, clone this repository to your local machine:
 ```bash
 git clone https://github.com/Arabsera-AIEng/AIEng-Labs
 ```
+# Weekly Reading Materials
+
+Below are the additional reading materials organized by week. Each week has its own folder containing the relevant documents and a markdown file listing the materials.
+
+- **Week 4**: [Additional Materials](docs/week4/week4.md)
