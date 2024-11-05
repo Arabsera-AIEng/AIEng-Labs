@@ -1,0 +1,67 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:13
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - airflow_network
+
+  webserver:
+    image: apache/airflow:2.5.1
+    user: "0:0"
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW_EXTRA_PIP_PACKAGES=apache-airflow-providers-postgres==3.3.0 'SQLAlchemy<2.0' apache-airflow-providers-docker docker
+      - HOST_DATA_DIR=/Users/amenshawy/Documents/teaching/arabsera/AIEng-Labs/week4/nyc_taxi_data_etl_pipeline/airflow/data
+      - HOST_PROCESSED_DATA_DIR=/Users/amenshawy/Documents/teaching/arabsera/AIEng-Labs/week4/nyc_taxi_data_etl_pipeline/airflow/processed_data
+    depends_on:
+      - postgres
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/data:/data
+      - ./airflow/processed_data:/processed_data
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8080:8080"
+    command: webserver
+    networks:
+      - airflow_network
+
+  scheduler:
+    image: apache/airflow:2.5.1
+    user: "0:0"
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
+      - AIRFLOW_EXTRA_PIP_PACKAGES=apache-airflow-providers-postgres==3.3.0 'SQLAlchemy<2.0' apache-airflow-providers-docker docker
+      - HOST_DATA_DIR=/Users/amenshawy/Documents/teaching/arabsera/AIEng-Labs/week4/nyc_taxi_data_etl_pipeline/airflow/data
+      - HOST_PROCESSED_DATA_DIR=/Users/amenshawy/Documents/teaching/arabsera/AIEng-Labs/week4/nyc_taxi_data_etl_pipeline/airflow/processed_data
+    depends_on:
+      - postgres
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/data:/data
+      - ./airflow/processed_data:/processed_data
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: scheduler
+    networks:
+      - airflow_network
+
+volumes:
+  postgres_data:
+
+networks:
+  airflow_network:
+    driver: bridge

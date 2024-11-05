@@ -8,6 +8,8 @@ Below is a list of the available lab demos along with links to the corresponding
 
 1. **Week 2: Intro to AI Engineering & ML System Design**
    - [Link to week 2](./week2/house_prices_aieng_pipelines)
+2. **Week 4: Data Pipelines and Engineering for AI Systems**
+   - [Link to week 2](./week4)
 
 Each lab week directory contains instructions and the necessary code to execute the demos. Make sure to follow the README and instructions provided in each lab to understand the concepts
 
